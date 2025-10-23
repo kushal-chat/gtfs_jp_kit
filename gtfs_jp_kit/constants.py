@@ -1,8 +1,10 @@
 """
+Modified for GTFS-JP.
+https://www.mlit.go.jp/sogoseisaku/transport/content/001419163.pdf
+
 Constants useful across modules.
 """
 
-#: GTFS data types
 DTYPES = {
     "agency": {
         "agency_id": "string",
@@ -14,19 +16,16 @@ DTYPES = {
         "agency_fare_url": "string",
         "agency_email": "string",
     },
-    "attributions": {
-        "attribution_id": "string",
+    # GTFS-JP: agency_jp.txt
+    "agency_jp": {
         "agency_id": "string",
-        "route_id": "string",
-        "trip_id": "string",
-        "organization_name": "string",
-        "is_producer": "Int32",
-        "is_operator": "Int32",
-        "is_authority": "Int32",
-        "attribution_url": "string",
-        "attribution_email": "string",
-        "attribution_phone": "string",
+        "agency_official_name": "string",
+        "agency_zip_number": "string",
+        "agency_address": "string",
+        "agency_president_pos": "string",
+        "agency_president_name": "string",
     },
+
     "calendar": {
         "service_id": "string",
         "monday": "Int32",
@@ -44,6 +43,7 @@ DTYPES = {
         "date": "string",
         "exception_type": "Int32",
     },
+
     "fare_attributes": {
         "fare_id": "string",
         "price": "float",
@@ -59,6 +59,7 @@ DTYPES = {
         "destination_id": "string",
         "contains_id": "string",
     },
+
     "feed_info": {
         "feed_publisher_name": "string",
         "feed_publisher_url": "string",
@@ -67,6 +68,7 @@ DTYPES = {
         "feed_end_date": "string",
         "feed_version": "string",
     },
+
     "frequencies": {
         "trip_id": "string",
         "start_time": "string",
@@ -74,6 +76,8 @@ DTYPES = {
         "headway_secs": "Int16",
         "exact_times": "Int32",
     },
+
+    # GTFS core
     "routes": {
         "route_id": "string",
         "agency_id": "string",
@@ -85,6 +89,7 @@ DTYPES = {
         "route_color": "string",
         "route_text_color": "string",
     },
+
     "shapes": {
         "shape_id": "string",
         "shape_pt_lat": "float",
@@ -92,6 +97,7 @@ DTYPES = {
         "shape_pt_sequence": "Int32",
         "shape_dist_traveled": "float",
     },
+
     "stop_times": {
         "trip_id": "string",
         "arrival_time": "string",
@@ -104,6 +110,7 @@ DTYPES = {
         "shape_dist_traveled": "float",
         "timepoint": "Int32",
     },
+
     "stops": {
         "stop_id": "string",
         "stop_code": "string",
@@ -118,12 +125,15 @@ DTYPES = {
         "stop_timezone": "string",
         "wheelchair_boarding": "Int32",
     },
+
     "transfers": {
         "from_stop_id": "string",
         "to_stop_id": "string",
         "transfer_type": "Int32",
         "min_transfer_time": "Int16",
     },
+
+    # GTFS core + JP extensions
     "trips": {
         "route_id": "string",
         "service_id": "string",
@@ -135,28 +145,65 @@ DTYPES = {
         "shape_id": "string",
         "wheelchair_accessible": "Int32",
         "bikes_allowed": "Int32",
+        # GTFS-JP additions
+        "jp_trip_desc": "string",
+        "jp_trip_desc_symbol": "string",
+        "jp_office_id": "string",
+        "jp_pattern_id": "string",
+    },
+
+    # GTFS-JP: office_jp.txt
+    "office_jp": {
+        "office_id": "string",
+        "office_name": "string",
+        "office_url": "string",
+        "office_phone": "string",
+    },
+
+    # GTFS-JP: pattern_jp.txt
+    "pattern_jp": {
+        "jp_pattern_id": "string",
+        "route_update_date": "string",
+        "origin_stop": "string",
+        "via_stop": "string",
+        "destination_stop": "string",
+    },
+
+    # GTFS (optional but common) translations.txt
+    "translations": {
+        "table_name": "string",
+        "field_name": "string",
+        "language": "string",
+        "translation": "string",
+        "record_id": "string",
+        "record_sub_id": "string",
+        "field_value": "string",
     },
 }
+
 
 #: Valid distance units
 DIST_UNITS = ["ft", "mi", "m", "km"]
 
-#: Feed attributes
+#: Feed attributes (aligned with __init__ signature; includes GTFS-JP)
 FEED_ATTRS = [
     "agency",
-    "attributions",
+    "agency_jp",
+    "feed_info",
+    "translations",
+    "routes",
+    "trips",
+    "office_jp",
+    "pattern_jp",
+    "frequencies",
     "calendar",
     "calendar_dates",
+    "shapes",
+    "stop_times",
+    "stops",
+    "transfers",
     "fare_attributes",
     "fare_rules",
-    "feed_info",
-    "frequencies",
-    "routes",
-    "shapes",
-    "stops",
-    "stop_times",
-    "trips",
-    "transfers",
     "dist_units",
 ]
 

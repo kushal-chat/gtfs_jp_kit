@@ -1,8 +1,9 @@
+# Run via uv run --no-project marimo run notebooks/examples.py in base.
+
 import marimo
 
 __generated_with = "0.17.0"
 app = marimo.App(width="medium")
-
 
 @app.cell
 def _():
@@ -16,28 +17,22 @@ def _():
     import matplotlib
     import folium as fl
 
-    import gtfs_kit as gk
+    import gtfs_jp_kit as gkjp
 
-    DATA = pl.Path("data")
-    return DATA, fl, gk, gp, mo, pd
-
+    DATA = pl.Path("japan_data")
+    return DATA, fl, gkjp, gp, mo, pd
 
 @app.cell
-def _(DATA, gk):
+def _(DATA, gkjp):
     # List feed
-
-    gk.list_feed(DATA / "cairns_gtfs.zip")
-    return
-
+    gkjp.list_feed(DATA / "hakodate_shiden.zip")
 
 @app.cell
-def _(DATA, gk):
+def _(DATA, gkjp):
     # Read feed and describe
-
-    feed = gk.read_feed(DATA / "cairns_gtfs.zip", dist_units="m")
+    feed = gkjp.read_feed(DATA / "keifuku_rosen.zip", dist_units="m")
     feed.describe()
     return (feed,)
-
 
 @app.cell
 def _(feed, mo):
@@ -45,7 +40,6 @@ def _(feed, mo):
     feed_1 = feed.append_dist_to_stop_times()
     mo.output.append(feed_1.stop_times)
     return (feed_1,)
-
 
 @app.cell
 def _(feed_1):
@@ -55,10 +49,10 @@ def _(feed_1):
     return (dates,)
 
 
+
 @app.cell
 def _(feed_1):
     # Trip stats; reuse these for later speed ups
-
     trip_stats = feed_1.compute_trip_stats()
     trip_stats
     return
@@ -81,8 +75,8 @@ def _(dates, feed_1):
 
 
 @app.cell
-def _(gk, nts):
-    gk.downsample(nts, freq="12h")
+def _(gkjp, nts):
+    gkjp.downsample(nts, freq="12h")
     return
 
 
@@ -96,8 +90,8 @@ def _(dates, feed, feed_1):
 
 
 @app.cell
-def _(gk, sts):
-    gk.downsample(sts, freq="d")
+def _(gkjp, sts):
+    gkjp.downsample(sts, freq="d")
     return
 
 
@@ -136,62 +130,23 @@ def _(feed_1):
 
     rsns = feed_1.routes["route_short_name"].iloc[2:4]
     feed_1.map_routes(route_short_names=rsns, show_stops=True)
+    
     return
 
 
-@app.cell
-def _(feed):
-    # Alternatively map routes without stops using GeoPandas's explore
+# @app.cell
+# def _(feed):
+#     # Alternatively map routes without stops using GeoPandas's explore
 
-    (
-        feed.get_routes(as_gdf=True).explore(
-            column="route_short_name",
-            style_kwds=dict(weight=3),
-            highlight_kwds=dict(weight=8),
-            tiles="CartoDB positron",
-        )
-    )
-    return
-
-
-@app.cell
-def _(DATA, feed_1, fl, gp):
-    # Show screen line
-
-    trip_id = "CNS2014-CNS_MUL-Weekday-00-4166247"
-    m = feed_1.map_trips([trip_id], show_stops=True, show_direction=True)
-    screen_line = gp.read_file(DATA / "cairns_screen_line.geojson")
-    keys_to_remove = [
-        key
-        for key in m._children.keys()
-        if key.startswith("layer_control_") or key.startswith("fit_bounds_")
-    ]
-    for key in keys_to_remove:
-        m._children.pop(key)
-    fg = fl.FeatureGroup(name="Screen lines")
-    fl.GeoJson(
-        screen_line, style_function=lambda feature: {"color": "red", "weight": 2}
-    ).add_to(fg)
-    fg.add_to(m)
-    fl.LayerControl().add_to(m)
-    m.fit_bounds(fg.get_bounds())
-    m
-    return screen_line, trip_id
-
-
-@app.cell
-def _(dates, feed_1, screen_line, trip_id):
-    # Screen line counts 
-
-    slc = feed_1.compute_screen_line_counts(screen_line, dates=dates)
-    slc.loc[lambda x: x["trip_id"] == trip_id]
-    return
-
-
-@app.cell
-def _():
-    return
-
+#     (
+#         feed.get_routes(as_gdf=True).explore(
+#             column="route_short_name",
+#             style_kwds=dict(weight=3),
+#             highlight_kwds=dict(weight=8),
+#             tiles="CartoDB positron",
+#         )
+#     )
+#     return
 
 if __name__ == "__main__":
     app.run()

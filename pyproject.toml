@@ -1,12 +1,13 @@
 [project]
-name = "gtfs-kit"
-version = "12.0.0"
-description = "A Python library for analyzing GTFS feeds."
+name = "gtfs-jp-kit"
+version = "12.0.1"
+description = "A fork of gtfs_kit Python library for analyzing GTFS JP feeds."
 readme = "README.rst"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [
     { name = "Alexander Raichev", email = "araichev@mrcagney.com" },
+    { name = "Kushal Chattopadhyay", email = "kushalfremont@gmail.com" },
 ]
 dependencies = [
     "shapely>=1.8",
@@ -30,18 +31,20 @@ dev = [
     "marimo>=0.13.2",
     "mapclassify>=2.8.1",
     "plotly>=6.1.2",
+    "mypy>=1.18.2",
 ]
 
 [project.urls]
-Repository = "https://github.com/mrcagney/gtfs_kit"
+Repository = "https://github.com/kushal-chat/gtfs_jp_kit"
 Documentation = "https://mrcagney.github.io/gtfs_kit_docs"
+Reference = "https://www.mlit.go.jp/sogoseisaku/transport/content/001419163.pdf"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.setuptools]
-packages = ["gtfs_kit"]
+packages = ["gtfs_jp_kit"]
 
 [tool.pytest.ini_options]
 markers = [
@@ -55,3 +58,6 @@ line-length = 90
 lint.select = ["E", "F"]
 lint.ignore = ["E501", "E731", "F401", "F403"]
 exclude = ["notebooks/*.py"]
+
+[tool.marimo.runtime]
+output_max_bytes = 20_000_000
