@@ -163,21 +163,27 @@ class Feed(object):
         self,
         dist_units: str,
         agency: DataFrame | None = None,
-        stops: DataFrame | None = None,
+        agency_jp: DataFrame | None = None,
+        feed_info: DataFrame | None = None,
+        translations: DataFrame | None = None,
         routes: DataFrame | None = None,
         trips: DataFrame | None = None,
-        stop_times: DataFrame | None = None,
+        office_jp: DataFrame | None = None,
+        pattern_jp: DataFrame | None = None,
+        frequencies: DataFrame | None = None,
         calendar: DataFrame | None = None,
         calendar_dates: DataFrame | None = None,
+        shapes: DataFrame | None = None,
+        stop_times: DataFrame | None = None,
+        stops: DataFrame | None = None,
+        transfers: DataFrame | None = None,
         fare_attributes: DataFrame | None = None,
         fare_rules: DataFrame | None = None,
-        shapes: DataFrame | None = None,
-        frequencies: DataFrame | None = None,
-        transfers: DataFrame | None = None,
-        feed_info: DataFrame | None = None,
-        attributions: DataFrame | None = None,
     ):
         """
+        Modified for GTFS-JP.
+        https://www.mlit.go.jp/sogoseisaku/transport/content/001419163.pdf
+
         Assume that every non-None input is a DataFrame,
         except for ``dist_units`` which should be a string in
         :const:`.constants.DIST_UNITS`.
