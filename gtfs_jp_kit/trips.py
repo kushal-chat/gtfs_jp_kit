@@ -33,8 +33,18 @@ def get_active_services(feed: "Feed", date: str) -> list[str]:
     removed_services = set()
 
     if feed.calendar is not None:
-        # Convert date to weekday string (e.g., "monday")
-        weekday_str = dt.datetime.strptime(date, "%Y%m%d").strftime("%A").lower()
+        # Get weekday index (0=Monday,...,6=Sunday) and map to canonical English names
+        weekday_idx = dt.datetime.strptime(date, "%Y%m%d").weekday()
+        weekday_names = [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday",
+        ]
+        weekday_str = weekday_names[weekday_idx]
         # Filter `calendar` to services active on date
         active_services |= set(
             feed.calendar.loc[

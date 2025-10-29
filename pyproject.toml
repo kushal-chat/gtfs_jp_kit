@@ -2,7 +2,7 @@
 name = "gtfs-jp-kit"
 version = "12.0.1"
 description = "A fork of gtfs_kit Python library for analyzing GTFS JP feeds."
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [
@@ -17,6 +17,8 @@ dependencies = [
     "folium>=0",
     "requests>=2",
     "pandas>=2.2.2",
+    "supabase>=2.22.1",
+    "sqlmodel>=0.0.27",
 ]
 
 [dependency-groups]

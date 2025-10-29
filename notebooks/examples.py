@@ -1,4 +1,5 @@
-# Run via uv run --no-project marimo run notebooks/examples.py in base.
+# Run via uv run marimo run notebooks/examples.py in base.
+# Achieves same functionality as original gtfs_kit.
 
 import marimo
 
@@ -14,23 +15,38 @@ def _():
     import pandas as pd
     import numpy as np
     import geopandas as gp
+    import os
     import matplotlib
     import folium as fl
+    import argparse
 
     import gtfs_jp_kit as gkjp
 
-    DATA = pl.Path("japan_data")
+    DATA_FOLDER = pl.Path("japan_data")
+    CITY = pl.Path("keifuku_rosen.zip") 
+
+    if not pl.Path.exists(DATA_FOLDER / CITY):
+        raise "This folder doesn't exist"
+    else:
+        DATA = pl.Path(DATA_FOLDER / CITY)
+
     return DATA, fl, gkjp, gp, mo, pd
 
 @app.cell
 def _(DATA, gkjp):
     # List feed
-    gkjp.list_feed(DATA / "hakodate_shiden.zip")
+    gkjp.list_feed(DATA)
 
 @app.cell
 def _(DATA, gkjp):
-    # Read feed and describe
-    feed = gkjp.read_feed(DATA / "keifuku_rosen.zip", dist_units="m")
+    # Test feed from online (hakodate) and describe
+    feed = gkjp.read_feed(f"https://api-public.odpt.org/api/v4/files/odpt/HakodateCity/Alllines.zip?date=20251201", dist_units="m")
+    feed.describe()
+
+@app.cell
+def _(DATA, gkjp):
+    # List feed
+    feed = gkjp.read_feed(DATA, dist_units="m")
     feed.describe()
     return (feed,)
 
@@ -48,8 +64,6 @@ def _(feed_1):
     dates
     return (dates,)
 
-
-
 @app.cell
 def _(feed_1):
     # Trip stats; reuse these for later speed ups
@@ -57,15 +71,12 @@ def _(feed_1):
     trip_stats
     return
 
-
 @app.cell
 def _(dates, feed_1):
     # Pass in trip stats to avoid recomputing them
-
     network_stats = feed_1.compute_network_stats(dates)
     network_stats
     return
-
 
 @app.cell
 def _(dates, feed_1):
@@ -73,12 +84,10 @@ def _(dates, feed_1):
     nts
     return (nts,)
 
-
 @app.cell
 def _(gkjp, nts):
     gkjp.downsample(nts, freq="12h")
     return
-
 
 @app.cell
 def _(dates, feed, feed_1):
@@ -88,12 +97,10 @@ def _(dates, feed, feed_1):
     sts
     return (sts,)
 
-
 @app.cell
 def _(gkjp, sts):
     gkjp.downsample(sts, freq="d")
     return
-
 
 @app.cell
 def _(dates, feed_1):
@@ -112,7 +119,6 @@ def _(dates, feed_1):
     feed_1.build_route_timetable(route_id, dates)
     return
 
-
 @app.cell
 def _(dates, feed_1, pd):
     # Locate trips
@@ -128,9 +134,9 @@ def _(dates, feed_1, pd):
 def _(feed_1):
     # Map routes
 
-    rsns = feed_1.routes["route_short_name"].iloc[2:4]
+    rsns = feed_1.routes["route_short_name"]
     feed_1.map_routes(route_short_names=rsns, show_stops=True)
-    
+        
     return
 
 

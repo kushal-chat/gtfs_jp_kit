@@ -49,7 +49,6 @@ def geometrize_stops(stops: pd.DataFrame, *, use_utm: bool = False) -> gpd.GeoDa
 
     return g
 
-
 def ungeometrize_stops(stops_g: gpd.GeoDataFrame) -> pd.DataFrame:
     """
     The inverse of :func:`geometrize_stops`.
